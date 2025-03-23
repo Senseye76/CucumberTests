@@ -2,10 +2,7 @@ package AllMyStepDef;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.But;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
+import io.cucumber.java.en.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -149,28 +146,27 @@ public class BasketBallMyStepdefs {
         System.out.println("Account created, check your e-mail: " + email);
     }
 
-    @But("Leaves the last name field empty")
-    public void butLeavesTheLastNameFieldEmpty() throws InterruptedException {
-        fillRequiredFields(true,false,true);
-    }
+//    @But("Leaves the last name field empty")
+//    public void butLeavesTheLastNameFieldEmpty() throws InterruptedException {
+//        fillRequiredFields(true,false,true);
+//    }
 
-    @But("Leaves the first name field empty")
-    public void leavesTheFirstNameFieldEmpty() throws InterruptedException {
-        fillRequiredFields(false, true,true);
-
-    }
+//    @But("Leaves the first name field empty")
+//    public void leavesTheFirstNameFieldEmpty() throws InterruptedException {
+//        fillRequiredFields(false, true,true);
+//
+//    }
 
     @Then("The user should see an error message last name is required")
     public void theUserShouldSeeAnErrorMessageLastNameIsRequired() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("label[for='member_lastname']")));
+        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"signup_form\"]/div[5]/div[2]/div/span/span")));
 
         Thread.sleep(500);
 
         String actualErrorText = errorMessage.getText();
 
-        if (!actualErrorText.contains("Last name is required")) {
+        if (!actualErrorText.contains("Last Name is required")) {
             throw new AssertionError("Error message not found " + actualErrorText);
         }
 
@@ -202,7 +198,7 @@ public class BasketBallMyStepdefs {
        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
       try {
-            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'First name is required')]")));
+            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'First Name is required')]")));
 
             if (!errorMessage.isDisplayed()) {
                 throw new AssertionError("Felmeddelandet för förnamn visas inte!");
@@ -223,41 +219,59 @@ public class BasketBallMyStepdefs {
             System.out.println("Good the user have not accepted the checkbox");
         }
 
-    @Then("The user should see an error message {string}")
-    public void theUserShouldSeeAnErrorMessage(String arg0) {
+    @Then("The user should see an error message about Terms and Conditions")
+    public void theUserShouldSeeAnErrorMessageAboutTermsAndConditions() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         try {
-           WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span")));
-
+           WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("span.field-validation-error")));
             if (!errorMessage.isDisplayed()) {
-                throw new AssertionError("Felmeddelandet för terms and conditions visas inte!");
+                throw new AssertionError("Terms and conditions error message was not found");
             }
 
-            System.out.println(" Felmeddelandet för 'terms and conditions' visas korrekt.");
+            System.out.println("The error message for 'terms and conditions' is correct.");
         } catch (Exception e) {
-            throw new AssertionError("Felmeddelandet för saknat terms and conditions hittades inte på sidan!");
+            throw new AssertionError("Terms and conditions error message is missing from the page");
        }
 
     }
 
     @And("The user fills in all the required fields but enter mismatching passwords")
-    public void theUserFillsInAllTheRequiredFieldsButEnterMismatchingPasswords() {
+    public void theUserFillsInAllTheRequiredFieldsButEnterMismatchingPasswords() throws InterruptedException {
         driver.findElement(By.id("member_firstname")).sendKeys(firstName);
         driver.findElement(By.id("member_lastname")).sendKeys(lastName);
         driver.findElement(By.id("member_emailaddress")).sendKeys(email);
         driver.findElement(By.id("member_confirmemailaddress")).sendKeys(email);
+        driver.findElement(By.id("dp")).sendKeys(dateOfBirth);
 
         driver.findElement(By.id("signupunlicenced_password")).sendKeys(password);
         driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("ehhhHejhej");
 
+
+        driver.findElement(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label")).click();
+        Thread.sleep(100);
+        driver.findElement(By.cssSelector("label[for='sign_up_25']")).click();
+        Thread.sleep(100);
+        driver.findElement(By.cssSelector("label[for='sign_up_26']")).click();
+        Thread.sleep(500);
     }
 
     @But("But enter mismatching passwords")
-    public void butEnterMismatchingPasswords() {
+    public void butEnterMismatchingPasswords() throws InterruptedException {
+        fillRequiredFields(true,true,true);
     }
 
     @And("The user fills in all the required fields without accepting terms")
     public void theUserFillsInAllTheRequiredFieldsWithoutAcceptingTerms() throws InterruptedException {
         fillRequiredFields(true,true,false);
+    }
+
+    @When("The user fills in all the required fields except last name")
+    public void theUserFillsInAllTheRequiredFieldsExceptLastName() throws InterruptedException {
+        fillRequiredFields(true,false,true);
+    }
+
+    @When("The user fills  in all the required fields except first name")
+    public void theUserFillsInAllTheRequiredFieldsExceptFirstName() throws InterruptedException {
+        fillRequiredFields(false,true,true);
     }
 }

@@ -11,16 +11,16 @@ Scenario: Successful supporter registration
 
   Scenario: Registration with missing last name
     Given The user is on the BasketBall regitration page
-    But Leaves the last name field empty
+    When The user fills in all the required fields except last name
     And The user press "Confirm and join"
-    Then The user should see an error message "Last name is required"
+    Then The user should see an error message last name is required
     And The account should not be created
 
     Scenario: Registration with missing first name
       Given The user is on the BasketBall regitration page
-      But Leaves the first name field empty
+      When The user fills  in all the required fields except first name
       And The user press "Confirm and join"
-      Then The user should see an error message "First name is required"
+      Then The user should see an error message first name is required
       And The account should not be created
 
 
@@ -29,7 +29,7 @@ Scenario: Successful supporter registration
         And The user fills in all the required fields without accepting terms
         But The user does not accept the terms and conditions
         And The user press "Confirm and join"
-        Then The user should see an error message "You must accept the terms and conditions"
+        Then The user should see an error message about Terms and Conditions
         And The account should not be created
 
       Scenario: Registration with unmatched password
