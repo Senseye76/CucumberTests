@@ -201,7 +201,7 @@ public class BasketBallMyStepdefs {
             WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'First Name is required')]")));
 
             if (!errorMessage.isDisplayed()) {
-                throw new AssertionError("Felmeddelandet för förnamn visas inte!");
+                throw new AssertionError("Felmdddelandet för förnamn visas inte!");
            }
 
             System.out.println(" Felmeddelandet 'First name is required' visas korrekt.");
