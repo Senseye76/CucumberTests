@@ -146,16 +146,6 @@ public class BasketBallMyStepdefs {
         System.out.println("Account created, check your e-mail: " + email);
     }
 
-//    @But("Leaves the last name field empty")
-//    public void butLeavesTheLastNameFieldEmpty() throws InterruptedException {
-//        fillRequiredFields(true,false,true);
-//    }
-
-//    @But("Leaves the first name field empty")
-//    public void leavesTheFirstNameFieldEmpty() throws InterruptedException {
-//        fillRequiredFields(false, true,true);
-//
-//    }
 
     @Then("The user should see an error message last name is required")
     public void theUserShouldSeeAnErrorMessageLastNameIsRequired() throws InterruptedException {
