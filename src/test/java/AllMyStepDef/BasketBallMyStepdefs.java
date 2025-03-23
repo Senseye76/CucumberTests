@@ -86,9 +86,15 @@ public class BasketBallMyStepdefs {
         return dob.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
-    private void fillRequiredFields(boolean acceptTerm) throws InterruptedException {
-        driver.findElement(By.id("member_firstname")).sendKeys(firstName);
-        driver.findElement(By.id("member_lastname")).sendKeys(lastName);
+    private void fillRequiredFields(boolean fillFirstName, boolean fillLastName, boolean acceptTerms) throws InterruptedException {
+        if (fillFirstName) {
+            driver.findElement(By.id("member_firstname")).sendKeys(firstName);
+        }
+
+        if (fillLastName) {
+            driver.findElement(By.id("member_lastname")).sendKeys(lastName);
+        }
+
         driver.findElement(By.id("member_emailaddress")).sendKeys(email);
         driver.findElement(By.id("member_confirmemailaddress")).sendKeys(email);
         driver.findElement(By.id("signupunlicenced_password")).sendKeys(password);
@@ -97,13 +103,14 @@ public class BasketBallMyStepdefs {
 
         Thread.sleep(500);
 
-
-        driver.findElement(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label")).click();
-        Thread.sleep(100);
-        driver.findElement(By.cssSelector("label[for='sign_up_25']")).click();
-        Thread.sleep(100);
-        driver.findElement(By.cssSelector("label[for='sign_up_26']")).click();
-        Thread.sleep(500);
+        if (acceptTerms) {
+            driver.findElement(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label")).click();
+            Thread.sleep(100);
+            driver.findElement(By.cssSelector("label[for='sign_up_25']")).click();
+            Thread.sleep(100);
+            driver.findElement(By.cssSelector("label[for='sign_up_26']")).click();
+            Thread.sleep(500);
+        }
     }
 
     @Given("The user is on the BasketBall regitration page")
@@ -113,8 +120,9 @@ public class BasketBallMyStepdefs {
 
     @And("The user fills in all the required fields")
     public void theUserFillsInAllTheRequiredFields() throws InterruptedException {
-        fillRequiredFields(true);
+        fillRequiredFields(true,true,true);
     }
+
 
     @And("The user press {string}")
     public void theUserPress(String buttonLabel) {
@@ -142,7 +150,14 @@ public class BasketBallMyStepdefs {
     }
 
     @But("Leaves the last name field empty")
-    public void butLeavesTheLastNameFieldEmpty()  {
+    public void butLeavesTheLastNameFieldEmpty() throws InterruptedException {
+        fillRequiredFields(true,false,true);
+    }
+
+    @But("Leaves the first name field empty")
+    public void leavesTheFirstNameFieldEmpty() throws InterruptedException {
+        fillRequiredFields(false, true,true);
+
     }
 
     @Then("The user should see an error message last name is required")
@@ -178,74 +193,71 @@ public class BasketBallMyStepdefs {
 
     @And("The user fills in the required fields but leaves the first name field empty")
     public void theUserFillsInTheRequiredFieldsButLeavesTheFirstNameFieldEmpty() throws InterruptedException {
-//        driver.findElement(By.id("member_lastname")).sendKeys(lastName);
-//        driver.findElement(By.id("member_emailaddress")).sendKeys(email);
-//        driver.findElement(By.id("member_confirmemailaddress")).sendKeys(email);
-//        driver.findElement(By.id("signupunlicenced_password")).sendKeys(password);
-//        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys(password);
-//        driver.findElement(By.id("dp")).sendKeys(dateOfBirth);
-//
-//
-//        driver.findElement(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label")).click();
-//        Thread.sleep(100);
-//        driver.findElement(By.cssSelector("label[for='sign_up_25']")).click();
-//        Thread.sleep(100);
-//        driver.findElement(By.cssSelector("label[for='sign_up_26']")).click();
-//        Thread.sleep(500);
-
-
-
+        fillRequiredFields(false, true, true);
     }
 
 
     @Then("The user should see an error message first name is required")
     public void theUserShouldSeeAnErrorMessageFirstNameIsRequired() {
-//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-//
-//        try {
-//            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'First name is required')]")));
-//
-//            if (!errorMessage.isDisplayed()) {
-//                throw new AssertionError("Felmeddelandet för förnamn visas inte!");
-//            }
-//
-//            System.out.println(" Felmeddelandet 'First name is required' visas korrekt.");
-//        } catch (Exception e) {
-//            throw new AssertionError("Felmeddelandet för saknat förnamn hittades inte på sidan!");
-//        }
+       WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+      try {
+            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'First name is required')]")));
+
+            if (!errorMessage.isDisplayed()) {
+                throw new AssertionError("Felmeddelandet för förnamn visas inte!");
+           }
+
+            System.out.println(" Felmeddelandet 'First name is required' visas korrekt.");
+        } catch (Exception e) {
+            throw new AssertionError("Felmeddelandet för saknat förnamn hittades inte på sidan!");
+        }
     }
 
         @But("The user does not accept the terms and conditions")
         public void theUserDoesNotAcceptTheTermsAndConditions() {
-//            WebElement termsCheckbox = driver.findElement(By.cssSelector("label[for='sign_up_25']"));
-//            if (termsCheckbox.isSelected()) {
-//                throw new AssertionError("The user accepted the checkbox");
-//            }
-//            System.out.println("Good the user have not accepted the checkbox");
+            WebElement termsCheckbox = driver.findElement(By.cssSelector("label[for='sign_up_25']"));
+            if (termsCheckbox.isSelected()) {
+                throw new AssertionError("The user accepted the checkbox");
+            }
+            System.out.println("Good the user have not accepted the checkbox");
         }
 
     @Then("The user should see an error message {string}")
     public void theUserShouldSeeAnErrorMessage(String arg0) {
-//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-//        try {
-//            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span")));
-//
-//            if (!errorMessage.isDisplayed()) {
-//                throw new AssertionError("Felmeddelandet för terms and conditions visas inte!");
-//            }
-//
-//            System.out.println(" Felmeddelandet för 'terms and conditions' visas korrekt.");
-//        } catch (Exception e) {
-//            throw new AssertionError("Felmeddelandet för saknat terms and conditions hittades inte på sidan!");
-//        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        try {
+           WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span")));
+
+            if (!errorMessage.isDisplayed()) {
+                throw new AssertionError("Felmeddelandet för terms and conditions visas inte!");
+            }
+
+            System.out.println(" Felmeddelandet för 'terms and conditions' visas korrekt.");
+        } catch (Exception e) {
+            throw new AssertionError("Felmeddelandet för saknat terms and conditions hittades inte på sidan!");
+       }
 
     }
 
     @And("The user fills in all the required fields but enter mismatching passwords")
     public void theUserFillsInAllTheRequiredFieldsButEnterMismatchingPasswords() {
+        driver.findElement(By.id("member_firstname")).sendKeys(firstName);
+        driver.findElement(By.id("member_lastname")).sendKeys(lastName);
+        driver.findElement(By.id("member_emailaddress")).sendKeys(email);
+        driver.findElement(By.id("member_confirmemailaddress")).sendKeys(email);
+
+        driver.findElement(By.id("signupunlicenced_password")).sendKeys(password);
+        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("ehhhHejhej");
+
     }
 
     @But("But enter mismatching passwords")
     public void butEnterMismatchingPasswords() {
+    }
+
+    @And("The user fills in all the required fields without accepting terms")
+    public void theUserFillsInAllTheRequiredFieldsWithoutAcceptingTerms() throws InterruptedException {
+        fillRequiredFields(true,true,false);
     }
 }
